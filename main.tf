@@ -25,4 +25,6 @@ module "high-availability-infrastructure" {
   security_group_id = module.security-group.security_group_id
   SN_blue_id = module.vpc.SN_blue_id
   SN_green_id = module.vpc.SN_green_id
+  vpc_id    = module.vpc.vpc_id
+  vpc_names = module.vpc.vpc_names
 }

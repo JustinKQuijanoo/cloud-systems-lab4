@@ -8,6 +8,7 @@
 
 resource "aws_vpc" "VPC-JQ" {
   count                = length(var.vpc_names)
+  cidr_block = var.vpc_cidrs[count.index]
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
@@ -27,7 +28,7 @@ resource "aws_internet_gateway" "IGW-JQ" {
 # Create subnets for VPC-blue
 resource "aws_subnet" "SN-Blue" {
   count                   = length(var.sn_blue_cidrs)
-  vpc_id                  = var.vpc_names[0]
+  vpc_id                  = var.vpc_ids[0]
   cidr_block              = var.sn_blue_cidrs[count.index]
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
@@ -39,7 +40,7 @@ resource "aws_subnet" "SN-Blue" {
 # Create subnets for VPC-green
 resource "aws_subnet" "SN-Green" {
   count                   = length(var.sn_green_cidrs)
-  vpc_id                  = var.vpc_names[1]
+  vpc_id                  = var.vpc_names[1].id
   cidr_block              = var.sn_green_cidrs[count.index]
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true

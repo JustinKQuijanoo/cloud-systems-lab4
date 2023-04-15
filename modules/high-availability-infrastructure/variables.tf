@@ -39,7 +39,12 @@ variable "SN_green_id" {
     type = list(any)
 }
 
-# variable "vpc_names" {
-#   description = "Name for VPC's"
-#   type        = list(any)
-# }
+variable "vpc_id" {
+  description = "IDs for VPC's"
+  type        = list(any)
+}
+
+variable "vpc_names" {
+  description = "Name for VPC's"
+  type        = list(any)
+}
