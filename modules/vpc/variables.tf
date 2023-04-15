@@ -41,6 +41,6 @@ variable "availability_zones" {
 
 variable "default_route" {
   description = "Default route"
-  type = string
-  default = "0.0.0.0/0"
+  type        = string
+  default     = "0.0.0.0/0"
 }
