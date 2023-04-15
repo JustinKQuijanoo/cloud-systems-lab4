@@ -65,3 +65,9 @@ resource "aws_route_table_association" "Blue-access" {
   subnet_id      = element(aws_subnet.SN-Blue.*.id, count.index)
   route_table_id = element(aws_route_table.RTB-JQ.*.id, count.index)
 }
+
+resource "aws_route_table_association" "Green-access" {
+  count          = length(var.sn_green_cidrs)
+  subnet_id      = element(aws_subnet.SN-Green.*.id, count.index)
+  route_table_id = element(aws_route_table.RTB-JQ.*.id, count.index)
+}
