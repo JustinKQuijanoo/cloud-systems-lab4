@@ -5,10 +5,9 @@
 ###
 
 # Create VPC blocks
-
 resource "aws_vpc" "VPC-JQ" {
   count                = length(var.vpc_names)
-  cidr_block = var.vpc_cidrs[count.index]
+  cidr_block           = var.vpc_cidrs[count.index]
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
@@ -28,7 +27,7 @@ resource "aws_internet_gateway" "IGW-JQ" {
 # Create subnets for VPC-blue
 resource "aws_subnet" "SN-Blue" {
   count                   = length(var.sn_blue_cidrs)
-  vpc_id                  = var.vpc_ids[0]
+  vpc_id                  = aws_vpc.VPC-JQ[0].id
   cidr_block              = var.sn_blue_cidrs[count.index]
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
@@ -40,7 +39,7 @@ resource "aws_subnet" "SN-Blue" {
 # Create subnets for VPC-green
 resource "aws_subnet" "SN-Green" {
   count                   = length(var.sn_green_cidrs)
-  vpc_id                  = var.vpc_names[1].id
+  vpc_id                  = aws_vpc.VPC-JQ[1].id
   cidr_block              = var.sn_green_cidrs[count.index]
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
@@ -49,9 +48,10 @@ resource "aws_subnet" "SN-Green" {
   }
 }
 
+# Create route table
 resource "aws_route_table" "RTB-JQ" {
   count  = length(var.vpc_names)
-  vpc_id = var.vpc_names[count.index]
+  vpc_id = aws_vpc.VPC-JQ[count.index].id
   route {
     cidr_block = var.default_route
     gateway_id = aws_internet_gateway.IGW-JQ[count.index].id
@@ -61,14 +61,16 @@ resource "aws_route_table" "RTB-JQ" {
   }
 }
 
+# Associate route table to VPC-Blue subnets
 resource "aws_route_table_association" "Blue-access" {
   count          = length(var.sn_blue_cidrs)
   subnet_id      = element(aws_subnet.SN-Blue.*.id, count.index)
-  route_table_id = element(aws_route_table.RTB-JQ.*.id, count.index)
+  route_table_id = element(aws_route_table.RTB-JQ.*.id, 0)
 }
 
+# Associate route table to VPC-Green subnets
 resource "aws_route_table_association" "Green-access" {
   count          = length(var.sn_green_cidrs)
   subnet_id      = element(aws_subnet.SN-Green.*.id, count.index)
-  route_table_id = element(aws_route_table.RTB-JQ.*.id, count.index)
+  route_table_id = element(aws_route_table.RTB-JQ.*.id, 1)
 }
