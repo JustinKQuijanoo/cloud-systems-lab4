@@ -4,6 +4,8 @@
 # Lab 4
 ###
 
+# variables from ./modules/vpc/outputs.tf
+# to be used for aws_security_group resource
 variable "vpc_id" {
   description = "IDs for VPC's"
   type        = list(any)
