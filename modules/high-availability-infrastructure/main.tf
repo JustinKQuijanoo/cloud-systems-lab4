@@ -16,7 +16,7 @@ resource "aws_launch_configuration" "Cluster-JQ" {
   }
 }
 
-# Create autoscaling group
+# Create autoscaling group for VPC blue
 resource "aws_autoscaling_group" "ASG-JQ-Blue" {
   launch_configuration = aws_launch_configuration.Cluster-JQ[0].name
   vpc_zone_identifier  = var.SN_blue_id
@@ -29,6 +29,7 @@ resource "aws_autoscaling_group" "ASG-JQ-Blue" {
   }
 }
 
+# Create autoscaling group for VPC green
 resource "aws_autoscaling_group" "ASG-JQ-Green" {
   launch_configuration = aws_launch_configuration.Cluster-JQ[1].name
   vpc_zone_identifier  = var.SN_green_id
@@ -41,6 +42,7 @@ resource "aws_autoscaling_group" "ASG-JQ-Green" {
   }
 }
 
+# create load balancer for VPC blue
 resource "aws_lb" "LB-JQ-Blue" {
   name               = "LB-JQ-${var.vpc_names[0]}"
   load_balancer_type = "application"
@@ -48,6 +50,7 @@ resource "aws_lb" "LB-JQ-Blue" {
   security_groups    = [var.security_group_id[0]]
 }
 
+# create load balancer for VPC green
 resource "aws_lb" "LB-JQ-Green" {
   name               = "LB-JQ-${var.vpc_names[1]}"
   load_balancer_type = "application"
@@ -55,6 +58,7 @@ resource "aws_lb" "LB-JQ-Green" {
   security_groups    = [var.security_group_id[1]]
 }
 
+# create load balancer listener for VPC blue
 resource "aws_lb_listener" "http-Blue" {
   load_balancer_arn = aws_lb.LB-JQ-Blue.arn
   port              = 80
@@ -69,6 +73,7 @@ resource "aws_lb_listener" "http-Blue" {
   }
 }
 
+# create load balancer listener for VPC green
 resource "aws_lb_listener" "http-Green" {
   load_balancer_arn = aws_lb.LB-JQ-Green.arn
   port              = 80
@@ -83,6 +88,7 @@ resource "aws_lb_listener" "http-Green" {
   }
 }
 
+# create load balancer target group for VPC blue
 resource "aws_lb_target_group" "TG-JQ-Blue" {
   name     = "TG-JQ-Blue"
   port     = 80
@@ -99,6 +105,7 @@ resource "aws_lb_target_group" "TG-JQ-Blue" {
   }
 }
 
+# create load balancer target group for VPC green
 resource "aws_lb_target_group" "TG-JQ-Green" {
   name     = "TG-JQ-Green"
   port     = 80
@@ -115,6 +122,7 @@ resource "aws_lb_target_group" "TG-JQ-Green" {
   }
 }
 
+# create load balancer listener rule for VPC blue
 resource "aws_lb_listener_rule" "Listener-JQ-Blue" {
   listener_arn = aws_lb_listener.http-Blue.arn
   priority     = 100
@@ -129,6 +137,7 @@ resource "aws_lb_listener_rule" "Listener-JQ-Blue" {
   }
 }
 
+# create load balancer listener rule for VPC green
 resource "aws_lb_listener_rule" "Listener-JQ-Green" {
   listener_arn = aws_lb_listener.http-Green.arn
   priority     = 100
