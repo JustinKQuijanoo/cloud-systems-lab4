@@ -23,8 +23,16 @@ module "security-group" {
 module "high-availability-infrastructure" {
   source            = "./modules/high-availability-infrastructure"
   security_group_id = module.security-group.security_group_id
-  SN_blue_id = module.vpc.SN_blue_id
-  SN_green_id = module.vpc.SN_green_id
-  vpc_id    = module.vpc.vpc_id
-  vpc_names = module.vpc.vpc_names
+  SN_blue_id        = module.vpc.SN_blue_id
+  SN_green_id       = module.vpc.SN_green_id
+  vpc_id            = module.vpc.vpc_id
+  vpc_names         = module.vpc.vpc_names
+}
+
+output "alb_blue_dns_name" {
+  value = "http://${module.high-availability-infrastructure.alb_blue_dns_name}"
+}
+
+output "alb_green_dns_name" {
+  value = "http://${module.high-availability-infrastructure.alb_green_dns_name}"
 }
