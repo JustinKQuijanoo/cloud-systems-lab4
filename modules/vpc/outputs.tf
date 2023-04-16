@@ -4,6 +4,7 @@
 # Lab 4
 ###
 
+# outputs used for high-availability-infrastructure and security-group modules
 output "vpc_id" {
   description = "VPC ID's"
   value       = aws_vpc.VPC-JQ[*].id
